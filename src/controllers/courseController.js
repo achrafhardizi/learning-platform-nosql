@@ -9,11 +9,29 @@ const mongoService = require('../services/mongoService');
 const redisService = require('../services/redisService');
 
 async function createCourse(req, res) {
-  // TODO: Implémenter la création d'un cours
-  // Utiliser les services pour la logique réutilisable
+  try {
+    // Validate input
+    const { error, value } = validateCourse(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
+    // Create course
+    const result = await mongoService.insertOne(COLLECTION, value);
+
+    // Invalidate cache
+    await redisService.invalidatePattern(`${CACHE_PREFIX}:*`);
+
+    res.status(201).json({
+      success: true,
+      data: result
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 }
 
 // Export des contrôleurs
 module.exports = {
-  // TODO: Exporter les fonctions du contrôleur
+  createCourse,
 };
