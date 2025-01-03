@@ -14,8 +14,15 @@ const requiredEnvVars = [
 
 // Validation des variables d'environnement
 function validateEnv() {
-  // TODO: Implémenter la validation
-  // Si une variable manque, lever une erreur explicative
+  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+  if (missingVars.length > 0) {
+    throw new Error(
+      'Missing required environment variables:\n' +
+      missingVars.map(varName => `  - ${varName}`).join('\n') +
+      '\nPlease check your .env file or environment configuration.'
+    );
+  }
 }
 
 module.exports = {
