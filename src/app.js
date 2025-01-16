@@ -8,7 +8,7 @@ const db = require('./config/db');
 // const courseRoutes = require('./routes/courseRoutes');
 // const studentRoutes = require('./routes/studentRoutes');
 
-const { connectMongo } = require('./config/db');
+const { connectMongo, connectRedis } = require('./config/db');
 
 
 const app = express();
@@ -16,6 +16,8 @@ const app = express();
 async function startServer() {
   try {
     // Initialiser les connexions aux bases de données
+    await connectRedis();
+    console.log('Redis connection successful');
     await connectMongo();
     console.log('MongoDB connection successful');
 

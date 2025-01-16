@@ -16,7 +16,7 @@
 
 const { MongoClient } = require('mongodb');
 const redis = require('redis');
-const { mongodb } = require('./env');
+const { mongodb, redisCache } = require('./env');
 
 let mongoClient;
 let redisClient;
@@ -41,8 +41,7 @@ async function connectMongo() {
 async function connectRedis() {
   // TODO: Implémenter la connexion Redis
   // Gérer les erreurs et les retries
-  const redisUri = config.REDIS_URI;
-  redisClient = redis.createClient(redisUri);
+  redisClient = redis.createClient(redisCache.uri);
 
   redisClient.on('error', (error) => {
     console.error('Error connecting to Redis:', error);
