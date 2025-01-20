@@ -5,7 +5,7 @@ const express = require('express');
 const config = require('./config/env');
 const db = require('./config/db');
 
-// const courseRoutes = require('./routes/courseRoutes');
+const courseRoutes = require('./routes/courseRoutes');
 // const studentRoutes = require('./routes/studentRoutes');
 
 const { connectMongo, connectRedis } = require('./config/db');
@@ -15,15 +15,20 @@ const app = express();
 
 async function startServer() {
   try {
-    // Initialiser les connexions aux bases de données
     await connectRedis();
     console.log('Redis connection successful');
     await connectMongo();
     console.log('MongoDB connection successful');
 
-    // TODO: Configurer les middlewares Express
-    // TODO: Monter les routes
-    // TODO: Démarrer le serveur
+    app.use(express.json());
+
+    app.use('/api/courses', courseRoutes); 
+
+    const port = process.env.PORT || 3000;
+
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);
