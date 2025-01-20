@@ -9,16 +9,11 @@ exécute la logique métier nécessaire, et renvoie une réponse appropriée au 
 Les routes devraient uniquement gérer les requêtes HTTP et déléguer le traitement de la logique métier aux contrôleurs ou aux services.
 Cela facilite les tests unitaires, car la logique métier peut être testée indépendamment des routes.*/
 
-
 const { ObjectId } = require('mongodb');
-const db = require('../config/db');
 const mongoService = require('../services/mongoService');
 const redisService = require('../services/redisService');
 
-// J'ai utilise une base de donne MongoDB deja existante pour les exemples il contient les films
 async function createCourse(req, res) {
-  // TODO: Implémenter la création d'un cours
-  // Utiliser les services pour la logique réutilisable
   const { title, description, duration, instructor } = req.body;
 
   if (!title || !description || !duration || !instructor) {
@@ -34,10 +29,7 @@ async function createCourse(req, res) {
   };
 
   try {
-    const db = await mongoService.connectMongo();
-    const result = await db.collection('courses').insertOne(newCourse);
-    const createdCourse = result.ops[0];
-
+    const createdCourse = await mongoService.create('courses', newCourse);
     res.status(201).json(createdCourse);
   } catch (error) {
     console.error('Error creating course:', error);
@@ -49,21 +41,12 @@ async function getCourse(req, res) {
   const { id } = req.params;
 
   try {
-    const cacheKey = `courses:${id}`;
-    const cachedCourse = await redisService.getCachedData(cacheKey);
-
-    if (cachedCourse) {
-      return res.status(200).json(cachedCourse);
-    }
-
-    const db = await mongoService.connectMongo();
-    const course = await db.collection('courses').findOne({ _id: new ObjectId(id) });
+    const course = await mongoService.findOneById('courses', id);
 
     if (!course) {
       return res.status(404).json({ error: 'Course not found' });
     }
 
-    await redisService.cacheData(cacheKey, course, 3600); // Cache for 1 hour
     res.status(200).json(course);
   } catch (error) {
     console.error('Error getting course:', error);
@@ -73,17 +56,7 @@ async function getCourse(req, res) {
 
 async function getAllCourses(req, res) {
   try {
-    const cacheKey = 'courses:all';
-    const cachedCourses = await redisService.getCachedData(cacheKey);
-
-    if (cachedCourses) {
-      return res.status(200).json(cachedCourses);
-    }
-
-    const db = await mongoService.connectMongo();
-    const courses = await db.collection('courses').find().toArray();
-
-    await redisService.cacheData(cacheKey, courses, 3600); // Cache for 1 hour
+    const courses = await mongoService.findAll('courses');
     res.status(200).json(courses);
   } catch (error) {
     console.error('Error getting all courses:', error);
@@ -99,14 +72,18 @@ async function updateCourse(req, res) {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  try {
-    const db = await mongoService.connectMongo();
-    const result = await db.collection('courses').updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { title, description, duration, instructor, updatedAt: new Date() } }
-    );
+  const update = {
+    title,
+    description,
+    duration,
+    instructor,
+    updatedAt: new Date(),
+  };
 
-    if (result.matchedCount === 0) {
+  try {
+    const updated = await mongoService.updateById('courses', id, update);
+
+    if (!updated) {
       return res.status(404).json({ error: 'Course not found' });
     }
 
@@ -121,10 +98,9 @@ async function deleteCourse(req, res) {
   const { id } = req.params;
 
   try {
-    const db = await mongoService.connectMongo();
-    const result = await db.collection('courses').deleteOne({ _id: new ObjectId(id) });
+    const deleted = await mongoService.deleteById('courses', id);
 
-    if (result.deletedCount === 0) {
+    if (!deleted) {
       return res.status(404).json({ error: 'Course not found' });
     }
 
@@ -137,7 +113,6 @@ async function deleteCourse(req, res) {
 
 // Export des contrôleurs
 module.exports = {
-  // TODO: Exporter les fonctions du contrôleur
   createCourse,
   getCourse,
   getAllCourses,
