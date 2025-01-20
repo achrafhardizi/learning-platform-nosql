@@ -34,6 +34,7 @@ Mini API qui va servir de backend à une plateforme d'apprentissage en ligne.
 
 ## Structure Du Project
 
+```bash
 src/
 ├── config/        # Configuration et variables d'environnement
 ├── controllers/   # Logique de contrôle des routes
@@ -41,6 +42,7 @@ src/
 ├── services/      # Logique métier
 ├── app.js         # Point d'entrée de l'application
 └── swagger.js     # Documentation de API
+```
 
 ## Choix Techniques
 
