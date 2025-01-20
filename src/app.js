@@ -2,6 +2,7 @@
 // Question: Quelle est la meilleure façon de gérer le démarrage de l'application ?
 
 const express = require('express');
+
 const { specs, swaggerUi } = require('./swagger');
 
 

@@ -2,8 +2,9 @@
 // Réponse:
 
 const { ObjectId } = require("mongodb");
-const { connectMongo } = require("./db");
+const { connectMongo } = require("../config/db");
 const { cacheData, getCachedData } = require("./redisService");
+
 
 // Fonctions utilitaires pour MongoDB
 async function findOneById(collectionName, id) {

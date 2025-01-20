@@ -4,7 +4,7 @@
 // Question: Quelles sont les bonnes pratiques pour les clés Redis ?
 // Réponse : Utilisez des noms de clés descriptifs et cohérents pour faciliter la gestion et la compréhension des données. Évitez les clés trop longues pour réduire l'utilisation de la mémoire. Utilisez des namespaces (par exemple, "user:1001:profile") pour organiser les clés de manière logique. Limitez le nombre de clés pour éviter une surcharge de la mémoire et des performances. Enfin, définissez des expirations pour les clés temporaires afin de libérer automatiquement la mémoire.
 
-const { connectRedis } = require("./db");
+const { connectRedis } = require("../config/db");
 
 // Fonctions utilitaires pour Redis
 async function cacheData(key, data, ttl) {
