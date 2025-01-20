@@ -34,12 +34,27 @@ Mini API qui va servir de backend à une plateforme d'apprentissage en ligne.
 
 ## Structure Du Project
 
-TODO
+src/
+├── config/        # Configuration et variables d'environnement
+├── controllers/   # Logique de contrôle des routes
+├── routes/        # Définition des routes API
+├── services/      # Logique métier
+├── app.js         # Point d'entrée de l'application
+└── swagger.js     # Documentation de API
 
 ## Choix Techniques
 
-TODO
+- Node.js et Express: Pour la création d'un serveur backend performant et flexible
+- MongoDB: Pour la gestion des données
+- Swagger: API Documentation
+- dotenv: Pour la gestion des variables d'environnement
 
-## Screenshots du Projet #
+## Screenshots du Projet
 
-TODO
+![MongoDb](./mongodb.png)
+
+Caption : Creation des Collection dans MongoDB
+
+![Redis](./redis.png)
+
+Caption : Redis Caching
