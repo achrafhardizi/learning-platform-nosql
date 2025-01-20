@@ -13,11 +13,87 @@ const router = express.Router();
 const courseController = require('../controllers/courseController');
 
 // Routes pour les cours
+/**
+ * @swagger
+ * /courses:
+ *   post:
+ *     summary: Create a new course
+ *     description: Create a new course with the provided details.
+ *     responses:
+ *       201:
+ *         description: Course created successfully
+ */
 router.post('/', courseController.createCourse);
+
+/**
+ * @swagger
+ * /courses/{id}:
+ *   get:
+ *     summary: Get a course by ID
+ *     description: Retrieve a specific course by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the course to retrieve
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Course retrieved successfully
+ */
 router.get('/:id', courseController.getCourse);
-router.get('/', courseController.getAllCourses); 
+
+/**
+ * @swagger
+ * /courses:
+ *   get:
+ *     summary: Get all courses
+ *     description: Retrieve a list of all courses.
+ *     responses:
+ *       200:
+ *         description: List of courses retrieved successfully
+ */
+router.get('/', courseController.getAllCourses);
+
+/**
+ * @swagger
+ * /courses/{id}:
+ *   put:
+ *     summary: Update a course by ID
+ *     description: Update the details of a specific course by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the course to update
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Course updated successfully
+ */
 router.put('/:id', courseController.updateCourse);
+
+/**
+ * @swagger
+ * /courses/{id}:
+ *   delete:
+ *     summary: Delete a course by ID
+ *     description: Delete a specific course by its ID.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the course to delete
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Course deleted successfully
+ */
 router.delete('/:id', courseController.deleteCourse);
-router.get('/stats', courseController.getCourseStats);
+
+// router.get('/stats', courseController.getCourseStats);
 
 module.exports = router;

@@ -2,8 +2,8 @@
 // Question: Quelle est la meilleure façon de gérer le démarrage de l'application ?
 
 const express = require('express');
-const config = require('./config/env');
-const db = require('./config/db');
+const { specs, swaggerUi } = require('./swagger');
+
 
 const courseRoutes = require('./routes/courseRoutes');
 // const studentRoutes = require('./routes/studentRoutes');
@@ -23,6 +23,9 @@ async function startServer() {
     app.use(express.json());
 
     app.use('/api/courses', courseRoutes); 
+
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
 
     const port = process.env.PORT || 3000;
 
