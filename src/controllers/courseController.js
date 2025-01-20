@@ -41,12 +41,20 @@ async function getCourse(req, res) {
   const { id } = req.params;
 
   try {
+    const cacheKey = `courses:${id}`;
+    const cachedCourse = await redisService.getCachedData(cacheKey);
+
+    if (cachedCourse) {
+      return res.status(200).json(cachedCourse);
+    }
+
     const course = await mongoService.findOneById('courses', id);
 
     if (!course) {
       return res.status(404).json({ error: 'Course not found' });
     }
 
+    await redisService.cacheData(cacheKey, course, 3600); // Cache for 1 hour
     res.status(200).json(course);
   } catch (error) {
     console.error('Error getting course:', error);
@@ -56,7 +64,15 @@ async function getCourse(req, res) {
 
 async function getAllCourses(req, res) {
   try {
+    const cacheKey = 'courses:all';
+    const cachedCourses = await redisService.getCachedData(cacheKey);
+
+    if (cachedCourses) {
+      return res.status(200).json(cachedCourses);
+    }
+
     const courses = await mongoService.findAll('courses');
+    await redisService.cacheData(cacheKey, courses, 3600); // Cache for 1 hour
     res.status(200).json(courses);
   } catch (error) {
     console.error('Error getting all courses:', error);
